@@ -1,12 +1,13 @@
 // src/screens/ChangePassword.tsx
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import * as Yup from 'yup';
 import { AppTextInput } from '../../Components/index'; // Asegúrate de que la ruta de importación sea correcta
 import api from '../../api';
 import Loader from '../../Components/Loader';
+import { AuthContext } from '../../../App';
 
 const PasswordSchema = Yup.object().shape({
   password: Yup.string().min(2, '¡Demasiado corto!').max(50, '¡Demasiado largo!').required('Requerido'),
@@ -17,11 +18,14 @@ const PasswordSchema = Yup.object().shape({
 
 export default function ChangePassword({ navigation }: any) {
   const [isLoading, setIsLoading] = useState(false);
+  const authContext: any = useContext(AuthContext)
+  const user = authContext.user;
+
 
   const handleChangePassword = async (values: { password: string; confirmPassword: string }) => {
     setIsLoading(true);
     // Aquí deberías llamar a la API para cambiar la contraseña
-    // const response = await api.post('/auth/change-password', { password: values.password });
+    // const response = await api.post('/auth/user/${user.id}', { password: values.password });
     setIsLoading(false);
   };
 

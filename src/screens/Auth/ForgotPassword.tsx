@@ -5,6 +5,7 @@ import { Button, Text } from 'react-native-paper';
 import { AppTextInput } from '../../Components/index'; // Asegúrate de que la ruta de importación sea correcta
 import api from '../../api';
 import Loader from '../../Components/Loader';
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function ForgotPassword({ navigation }: any) {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,8 +13,21 @@ export default function ForgotPassword({ navigation }: any) {
 
   const handleResetPassword = async () => {
     setIsLoading(true);
-    // Aquí deberías llamar a la API para resetear la contraseña
-    const response = await api.post('/auth/forgot-password', { email });
+    try {
+      const response = await api.post('/auth/forgotPassword', { email });
+      console.log(response.data);
+      showMessage({
+        message: "Correo enviado con éxito",
+        type: "success",
+        position: 'top',
+      });
+    } catch (error) {
+      showMessage({
+        message: "Hubo un error al enviar el correo",
+        type: "danger",
+        position: 'top',
+      });
+    }
     setIsLoading(false);
   };
 
@@ -32,6 +46,7 @@ export default function ForgotPassword({ navigation }: any) {
       <Button mode='text' onPress={() => navigation.goBack()} style={{ justifyContent: 'center' }}>
         Volver al Inicio de Sesión
       </Button>
+      <FlashMessage position="top" />
     </View>
   );
 }

@@ -14,6 +14,7 @@ import { OrderFood } from './src/screens/Order';
 import { theme } from './src/theme';
 import ProfileStackScreen from './src/screens/Profile/ProfileStackScreen';
 import ForgotPassword from './src/screens/Auth/ForgotPassword';
+import ChangePassword from './src/screens/Auth/ChangePassword';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -31,6 +32,10 @@ export const AuthContext = createContext<AuthContextType | undefined | null>(und
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>({});
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const email = params.get('email');
+  const resetCode = params.get('resetCode');
 
   useEffect(() => {
     api.get('/auth/validateToken').then((response) => {
@@ -93,6 +98,7 @@ export default function App() {
               <Stack.Screen name='Login' component={Login} />
               <Stack.Screen name='Register' component={Register} />
               <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
+              <Stack.Screen name='ChangePassword' component={ChangePassword} />
             </Stack.Navigator>
           )}
         </NavigationContainer>
