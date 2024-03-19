@@ -35,7 +35,7 @@ export default function App() {
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const email = params.get('email');
-  const resetCode = params.get('resetCode');
+  const token = params.get('token');
 
   useEffect(() => {
     api.get('/auth/validateToken').then((response) => {
@@ -95,10 +95,10 @@ export default function App() {
             </Tab.Navigator>
           ) : (
             <Stack.Navigator>
+              {email && <Stack.Screen name='ChangePassword' component={ChangePassword} />}
               <Stack.Screen name='Login' component={Login} />
               <Stack.Screen name='Register' component={Register} />
               <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
-              <Stack.Screen name='ChangePassword' component={ChangePassword} />
             </Stack.Navigator>
           )}
         </NavigationContainer>

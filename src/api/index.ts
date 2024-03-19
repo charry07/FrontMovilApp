@@ -2,8 +2,10 @@
 
 import axios from 'axios';
 
+export const URLbase = 'http://localhost:3001/api';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: URLbase,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('token')}`,
     Accept: 'application/json',

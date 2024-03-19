@@ -8,6 +8,7 @@ import { AppTextInput } from '../../Components/index'; // Asegúrate de que la r
 import api from '../../api';
 import Loader from '../../Components/Loader';
 import { AuthContext } from '../../../App';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().min(2, '¡Demasiado corto!').max(50, '¡Demasiado largo!').required('Requerido'),
@@ -20,6 +21,7 @@ export default function Login({ navigation }: any) {
 
   return (
     <View style={{ flex: 1, padding: 20, justifyContent: 'center' }}>
+      <FlashMessage position='top' />
       <Loader visible={isLoading} />
       <Text style={{ fontSize: 24, marginBottom: 20, textAlign: 'center' }}>Inicio de Sesión</Text>
       <Formik
@@ -27,14 +29,29 @@ export default function Login({ navigation }: any) {
         validationSchema={LoginSchema}
         onSubmit={async (values) => {
           setIsLoading(true);
-          const response = await api.post('/auth/login', values);
-          if (response.data.token) {
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));                                                                                                                                                
-            await authContext.setUser(response.data.user);
-            window.location.reload();
+          try {
+            const response = await api.post('/auth/login', values);
+            if (response.data.token) {
+              localStorage.setItem('token', response.data.token);
+              localStorage.setItem('user', JSON.stringify(response.data.user));
+              await authContext.setUser(response.data.user);
+              window.location.reload();
+            } else {
+              showMessage({
+                message: 'Error',
+                description: 'No se pudo iniciar sesión. Por favor, inténtalo de nuevo.',
+                type: 'danger',
+              });
+            }
+          } catch (error:any) {
+            showMessage({
+              message: 'Error',
+              description: error.message,
+              type: 'danger',
+            });
+          } finally {
+            setIsLoading(false);
           }
-          setIsLoading(false);
         }}>
         {({ setFieldValue, handleBlur, handleSubmit, values, errors, touched }) => (
           <View>
